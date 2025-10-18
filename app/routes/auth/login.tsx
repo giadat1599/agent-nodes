@@ -3,6 +3,10 @@ import { authClient } from "~/lib/auth-client"
 import { LoginForm } from "~/routes/components/auth/login-form"
 import type { Route } from "./+types/login"
 
+export function meta() {
+	return [{ title: "Login" }, { name: "description", content: "Login to your account" }]
+}
+
 export async function loader({ request }: Route.LoaderArgs) {
 	const session = await authClient.getSession({
 		fetchOptions: { headers: new Headers(request.headers) },
@@ -14,9 +18,5 @@ export async function loader({ request }: Route.LoaderArgs) {
 }
 
 export default function Page() {
-	return (
-		<div className="min-h-screen flex items-center justify-center p-2">
-			<LoginForm />
-		</div>
-	)
+	return <LoginForm />
 }
