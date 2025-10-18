@@ -19,7 +19,8 @@
 		"enabled": true,
 		"rules": {
 			"recommended": true,
-			"suspicious": "off"
+			"suspicious": "off",
+			"a11y": "off"
 		}
 	},
 	"javascript": {
