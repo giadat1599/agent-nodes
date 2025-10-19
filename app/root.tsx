@@ -1,3 +1,6 @@
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+import { useMemo } from "react"
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router"
 
 import type { Route } from "./+types/root"
@@ -38,7 +41,13 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-	return <Outlet />
+	const queryClient = useMemo(() => new QueryClient(), [])
+	return (
+		<QueryClientProvider client={queryClient}>
+			<Outlet />
+			<ReactQueryDevtools initialIsOpen={false} />
+		</QueryClientProvider>
+	)
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
