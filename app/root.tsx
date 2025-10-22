@@ -32,7 +32,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 			</head>
 			<body>
 				{children}
-				<Toaster />
+				<Toaster position="top-center" />
 				<ScrollRestoration />
 				<Scripts />
 			</body>
