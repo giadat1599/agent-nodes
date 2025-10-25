@@ -1,6 +1,6 @@
 import { redirect } from "react-router"
+import { RegisterForm } from "~/components/routes/auth/register-form"
 import { authClient } from "~/lib/auth-client"
-import { RegisterForm } from "~/routes/components/auth/register-form"
 import type { Route } from "./+types/signup"
 
 export function meta() {

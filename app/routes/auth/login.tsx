@@ -1,6 +1,6 @@
 import { redirect } from "react-router"
+import { LoginForm } from "~/components/routes/auth/login-form"
 import { authClient } from "~/lib/auth-client"
-import { LoginForm } from "~/routes/components/auth/login-form"
 import type { Route } from "./+types/login"
 
 export function meta() {
