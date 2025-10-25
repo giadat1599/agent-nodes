@@ -78,7 +78,7 @@ export function RegisterForm() {
 									<FormItem>
 										<FormLabel>Name</FormLabel>
 										<FormControl>
-											<Input placeholder="John Doe" {...field} />
+											<Input disabled={isPending} placeholder="John Doe" {...field} />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -91,7 +91,7 @@ export function RegisterForm() {
 									<FormItem>
 										<FormLabel>Email</FormLabel>
 										<FormControl>
-											<Input placeholder="john.doe@example.com" type="email" {...field} />
+											<Input disabled={isPending} placeholder="john.doe@example.com" type="email" {...field} />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -104,7 +104,7 @@ export function RegisterForm() {
 									<FormItem>
 										<FormLabel>Password</FormLabel>
 										<FormControl>
-											<PasswordInput placeholder="********" {...field} />
+											<PasswordInput disabled={isPending} placeholder="********" {...field} />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
@@ -117,7 +117,7 @@ export function RegisterForm() {
 									<FormItem>
 										<FormLabel>Confirm Password</FormLabel>
 										<FormControl>
-											<PasswordInput placeholder="********" {...field} />
+											<PasswordInput disabled={isPending} placeholder="********" {...field} />
 										</FormControl>
 										<FormMessage />
 									</FormItem>
