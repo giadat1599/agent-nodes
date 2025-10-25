@@ -1,6 +1,6 @@
 import { Outlet } from "react-router"
-import { AppHeader } from "~/components/app/dashboard/app-header"
-import { AppSidebar } from "~/components/app/dashboard/app-sidebar"
+import { AppHeader } from "~/components/app/app-header"
+import { AppSidebar } from "~/components/app/app-sidebar"
 import { SidebarInset, SidebarProvider } from "~/components/ui/sidebar"
 import { authMiddleware } from "~/middlewares/auth"
 import type { Route } from "./+types/dashboard-layout"
