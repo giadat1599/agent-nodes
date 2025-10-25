@@ -11,21 +11,28 @@ import {
 	DropdownMenuTrigger,
 } from "~/components/ui/dropdown-menu"
 import { SidebarMenuButton } from "~/components/ui/sidebar"
+import { Skeleton } from "~/components/ui/skeleton"
 import { authClient } from "~/lib/auth-client"
 import { avatarFallback } from "~/lib/avatar-fallback"
 
 export function AppSidebarFooterMenu() {
 	const navigate = useNavigate()
-	const { data } = authClient.useSession()
+	const { data, isPending } = authClient.useSession()
 
-	const handleLogout = () => {
-		toast.promise(authClient.signOut, {
-			loading: "Logging out...",
-			error: "Failed to log out. Please try again.",
-			onDismiss: () => {
-				navigate("/auth/login")
+	const handleLogout = async () => {
+		const toastLoadingId = toast.loading("Logging out...")
+		authClient.signOut({
+			fetchOptions: {
+				onSuccess: () => {
+					toast.dismiss(toastLoadingId)
+					navigate("/auth/login")
+				},
 			},
 		})
+	}
+
+	if (isPending) {
+		return <Skeleton className="h-10" />
 	}
 
 	return (
