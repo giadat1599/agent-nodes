@@ -13,7 +13,7 @@ export function EmptyWorkflows() {
 				<EmptyMedia variant="icon">
 					<FolderOpenIcon />
 				</EmptyMedia>
-				<EmptyTitle>No Workflows Yet</EmptyTitle>
+				<EmptyTitle>No Workflows</EmptyTitle>
 				<EmptyDescription>
 					You haven't created any workflows yet. Get started by creating your first workflow.
 				</EmptyDescription>

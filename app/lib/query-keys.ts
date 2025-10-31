@@ -1,3 +1,3 @@
 export const QUERY_KEYS = {
-	workflows: ["workflows"],
+	workflows: (...keys: any) => ["workflows", ...keys],
 }

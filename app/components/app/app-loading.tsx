@@ -6,7 +6,7 @@ interface AppLoadingProps {
 
 export function AppLoading({ message }: AppLoadingProps) {
 	return (
-		<div className="flex items-center flex-col justify-center flex-1 gap-2">
+		<div className="flex-1 flex items-center justify-center flex-col gap-2">
 			<p>{message || "Loading..."}</p>
 			<Spinner className="size-8 text-muted-foreground" />
 		</div>

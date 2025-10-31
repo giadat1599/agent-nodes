@@ -1,36 +1,33 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { useNavigate } from "react-router"
 import { toast } from "sonner"
 import { useGetQueryParams } from "~/hooks/use-watch-query-params"
 import apiFetch, { type ApiResponse } from "~/lib/api-fetch"
 import { QUERY_KEYS } from "~/lib/query-keys"
 import type { Workflow } from "~/types/workflow"
 
-export function useCreateWorkflow() {
+export function useDeleteWorkflow() {
 	const queryClient = useQueryClient()
-	const navigate = useNavigate()
 	const { search, page } = useGetQueryParams()
 
 	const mutation = useMutation({
-		mutationFn: async (name: string) => {
-			const response = await apiFetch<ApiResponse<Workflow>>("/workflows", {
-				method: "POST",
-				body: { name },
+		mutationFn: async (id: string) => {
+			const response = await apiFetch<ApiResponse<Workflow>>(`/workflows/${id}`, {
+				method: "DELETE",
 			})
+
 			if (response.success) {
 				return response.data
 			}
 		},
-		onSuccess: async (newWorkflow) => {
-			if (newWorkflow) {
+		onSuccess: async (deletedWorkflow) => {
+			if (deletedWorkflow) {
 				queryClient.invalidateQueries({
 					queryKey: QUERY_KEYS.workflows(search, page),
 				})
-				navigate(`/workflows/${newWorkflow.id}`)
 			}
 		},
 		onError: () => {
-			toast.error("Failed to create workflow. Please try again.")
+			toast.error("Failed to delete workflow. Please try again.")
 		},
 	})
 
