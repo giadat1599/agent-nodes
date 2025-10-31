@@ -1,5 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "react-router"
+import { toast } from "sonner"
+import { useGetQueryParams } from "~/hooks/use-watch-query-params"
 import apiFetch, { type ApiResponse } from "~/lib/api-fetch"
 import { QUERY_KEYS } from "~/lib/query-keys"
 import type { Workflow } from "~/types/workflow"
@@ -7,6 +9,7 @@ import type { Workflow } from "~/types/workflow"
 export function useCreateWorkflow() {
 	const queryClient = useQueryClient()
 	const navigate = useNavigate()
+	const { search, page } = useGetQueryParams()
 
 	const mutation = useMutation({
 		mutationFn: async (name: string) => {
@@ -20,14 +23,14 @@ export function useCreateWorkflow() {
 		},
 		onSuccess: async (newWorkflow) => {
 			if (newWorkflow) {
-				queryClient.setQueryData<Workflow[]>(QUERY_KEYS.workflows, (oldWorkflows) => {
-					if (oldWorkflows) {
-						return [...oldWorkflows, newWorkflow]
-					}
-					return [newWorkflow]
+				queryClient.invalidateQueries({
+					queryKey: QUERY_KEYS.workflows(search, page),
 				})
 				navigate(`/workflows/${newWorkflow.id}`)
 			}
+		},
+		onError: () => {
+			toast.error("Failed to create workflow. Please try again.")
 		},
 	})
 

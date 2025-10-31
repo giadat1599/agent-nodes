@@ -1,3 +1,3 @@
 export function AppContainer({ children }: React.PropsWithChildren) {
-	return <div className="p-4 md:px-10 md:py-6 h-screen max-w-screen-xl w-full mx-auto">{children}</div>
+	return <div className="flex-1 flex flex-col px-4 md:px-10 md:py-6">{children}</div>
 }
