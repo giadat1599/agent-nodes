@@ -1,8 +1,8 @@
 import { useQuery } from "@tanstack/react-query"
 import { useGetQueryParams } from "~/hooks/use-watch-query-params"
 import apiFetch, { type PaginatedResponse } from "~/lib/api-fetch"
-import { QUERY_KEYS } from "~/lib/query-keys"
 import type { Workflow } from "~/types/workflow"
+import { QUERY_KEYS } from "~/utils/query-keys"
 
 export function useGetWorkflows() {
 	const { search, page } = useGetQueryParams()
