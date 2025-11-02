@@ -1,10 +1,11 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
-import { useMemo } from "react"
-import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router"
+import { useEffect, useMemo } from "react"
+import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration, useNavigation } from "react-router"
 
 import type { Route } from "./+types/root"
 import "./app.css"
+import { toast } from "sonner"
 import { Toaster } from "./components/ui/sonner"
 
 export const links: Route.LinksFunction = () => [
@@ -42,6 +43,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
 	const queryClient = useMemo(() => new QueryClient(), [])
+	const navigation = useNavigation()
+	const isNavigating = Boolean(navigation.location)
+
+	useEffect(() => {
+		if (isNavigating) {
+			toast.loading("Loading ......")
+		} else {
+			toast.dismiss()
+		}
+	}, [isNavigating])
+
 	return (
 		<QueryClientProvider client={queryClient}>
 			<Outlet />

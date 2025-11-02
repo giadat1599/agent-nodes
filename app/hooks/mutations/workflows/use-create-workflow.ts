@@ -3,8 +3,8 @@ import { useNavigate } from "react-router"
 import { toast } from "sonner"
 import { useGetQueryParams } from "~/hooks/use-watch-query-params"
 import apiFetch, { type ApiResponse } from "~/lib/api-fetch"
-import { QUERY_KEYS } from "~/lib/query-keys"
 import type { Workflow } from "~/types/workflow"
+import { QUERY_KEYS } from "~/utils/query-keys"
 
 export function useCreateWorkflow() {
 	const queryClient = useQueryClient()

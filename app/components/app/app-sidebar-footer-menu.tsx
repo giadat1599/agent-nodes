@@ -13,7 +13,7 @@ import {
 import { SidebarMenuButton } from "~/components/ui/sidebar"
 import { Skeleton } from "~/components/ui/skeleton"
 import { authClient } from "~/lib/auth-client"
-import { avatarFallback } from "~/lib/avatar-fallback"
+import { avatarFallback } from "~/utils/avatar-fallback"
 
 export function AppSidebarFooterMenu() {
 	const navigate = useNavigate()
