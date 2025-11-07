@@ -1,5 +1,5 @@
 import { Outlet } from "react-router"
-import { AppLogo } from "~/components/app-logo"
+import { AppLogo } from "~/components/app/app-logo"
 
 export default function Layout() {
 	return (
