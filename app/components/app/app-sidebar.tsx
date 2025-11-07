@@ -1,6 +1,6 @@
 import { FolderOpenIcon, HistoryIcon, KeyIcon } from "lucide-react"
 import { Link, useLocation } from "react-router"
-import { AppLogo } from "~/components/app-logo"
+import { AppLogo } from "~/components/app/app-logo"
 import {
 	Sidebar,
 	SidebarContent,
