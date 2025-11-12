@@ -4,7 +4,7 @@ import { ManualTriggerNode } from "~/components/app/dashboard/workflows/editor/t
 import { InitialNode } from "~/components/nodes/initial-node"
 import type { NodeType } from "~/types/workflow"
 
-const Node: Record<Uppercase<NodeType>, NodeType> = {
+export const Node: Record<Uppercase<NodeType>, NodeType> = {
 	INITIAL: "initial",
 	MANUAL_TRIGGER: "manual_trigger",
 	HTTP_REQUEST: "http_request",

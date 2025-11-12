@@ -12,15 +12,16 @@ import {
 	Panel,
 	ReactFlow,
 } from "@xyflow/react"
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import type { Workflow } from "~/types/workflow"
 import "@xyflow/react/dist/style.css"
 
-import { NodeComponents } from "~/constants/nodes"
+import { NodeComponents, Node as NodeType } from "~/constants/nodes"
 
 import { useEditorStore } from "~/stores/editor"
 import { toReactFlowTypes } from "~/utils/to-react-flow"
 import { AddNodeButton } from "./add-node-button"
+import { ExecuteWorkflowButton } from "./execute-workflow-button"
 
 interface EditorProps {
 	workflow: Workflow
@@ -35,6 +36,10 @@ export function Editor({ workflow }: EditorProps) {
 	const [edges, setEdges] = useState<Edge[]>(() => initialReactFlowData.edges)
 
 	// const mutation = useUpdateWorkflowNodes()
+
+	const hasManualTrigger = useMemo(() => {
+		return nodes.some((node) => node.type === NodeType.MANUAL_TRIGGER)
+	}, [nodes])
 
 	const onNodesChange = useCallback(
 		(changes: NodeChange[]) => setNodes((nodesSnapshot) => applyNodeChanges(changes, nodesSnapshot)),
@@ -83,6 +88,11 @@ export function Editor({ workflow }: EditorProps) {
 				<Panel position="top-right">
 					<AddNodeButton />
 				</Panel>
+				{hasManualTrigger && (
+					<Panel position="bottom-center">
+						<ExecuteWorkflowButton workflowId={workflow.id} />
+					</Panel>
+				)}
 			</ReactFlow>
 		</div>
 	)
