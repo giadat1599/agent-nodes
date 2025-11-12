@@ -5,6 +5,7 @@ import { BaseExecutionNode } from "~/components/nodes/base-execution-node"
 import { type HttpRequestFormData, HttpRequestNodeDialog } from "./node-dialog"
 
 export type HttpRequestNodeData = {
+	variableName?: string
 	endpoint?: string
 	method?: "GET" | "POST" | "PUT" | "PATCH" | "DELETE"
 	body?: string
@@ -28,9 +29,7 @@ export const HttpRequestNode = memo((props: NodeProps<HttpRequestNodeType>) => {
 						...node,
 						data: {
 							...node.data,
-							endpoint: values.endpoint,
-							method: values.method,
-							body: values.body,
+							...values,
 						},
 					}
 				}
