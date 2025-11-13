@@ -2,20 +2,12 @@ import { AppLoading } from "~/components/app/app-loading"
 import { Editor } from "~/components/app/dashboard/workflows/editor/editor"
 import { EditorHeader } from "~/components/app/dashboard/workflows/editor/editor-header"
 import { useGetWorkflow } from "~/hooks/queries/workflows/use-get-workflow"
-import apiFetch, { type ApiResponse } from "~/lib/api-fetch"
-import type { Workflow } from "~/types/workflow"
+import { getWorkflow } from "~/services/workflow"
 import type { Route } from "./+types/workflow-id"
 
 export async function loader({ params, request }: Route.LoaderArgs) {
-	try {
-		const response = await apiFetch<ApiResponse<Workflow>>(`/workflows/${params.workflowId}`, {
-			method: "GET",
-			headers: new Headers(request.headers),
-		})
-		if (response.success) {
-			return { workflow: response.data }
-		}
-	} catch {}
+	const workflow = await getWorkflow(params.workflowId, request)
+	return { workflow }
 }
 
 export function meta({ data }: Route.MetaArgs) {

@@ -38,7 +38,7 @@ export function CreateWorkflowButton() {
 	})
 
 	const handleSubmit = async (data: CreateWorkflowData) => {
-		await mutation.mutateAsync(data.name)
+		await mutation.mutateAsync(data)
 	}
 	return (
 		<Dialog onOpenChange={() => form.reset()}>

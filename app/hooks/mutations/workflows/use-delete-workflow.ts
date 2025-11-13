@@ -1,8 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
 import { useGetQueryParams } from "~/hooks/use-watch-query-params"
-import apiFetch, { type ApiResponse } from "~/lib/api-fetch"
-import type { Workflow } from "~/types/workflow"
+import { deleteWorkflow } from "~/services/workflow"
 import { QUERY_KEYS } from "~/utils/query-keys"
 
 export function useDeleteWorkflow() {
@@ -10,20 +9,13 @@ export function useDeleteWorkflow() {
 	const { search, page } = useGetQueryParams()
 
 	const mutation = useMutation({
-		mutationFn: async (id: string) => {
-			const response = await apiFetch<ApiResponse<Workflow>>(`/workflows/${id}`, {
-				method: "DELETE",
-			})
-
-			if (response.success) {
-				return response.data
-			}
-		},
+		mutationFn: deleteWorkflow,
 		onSuccess: async (deletedWorkflow) => {
 			if (deletedWorkflow) {
 				queryClient.invalidateQueries({
 					queryKey: QUERY_KEYS.workflows(search, page),
 				})
+				toast.success(`Workflow "${deletedWorkflow.name}" deleted.`)
 			}
 		},
 		onError: () => {
