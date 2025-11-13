@@ -2,8 +2,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { useNavigate } from "react-router"
 import { toast } from "sonner"
 import { useGetQueryParams } from "~/hooks/use-watch-query-params"
-import apiFetch, { type ApiResponse } from "~/lib/api-fetch"
-import type { Workflow } from "~/types/workflow"
+import { createWorkflow } from "~/services/workflow"
 import { QUERY_KEYS } from "~/utils/query-keys"
 
 export function useCreateWorkflow() {
@@ -12,15 +11,7 @@ export function useCreateWorkflow() {
 	const { search, page } = useGetQueryParams()
 
 	const mutation = useMutation({
-		mutationFn: async (name: string) => {
-			const response = await apiFetch<ApiResponse<Workflow>>("/workflows", {
-				method: "POST",
-				body: { name },
-			})
-			if (response.success) {
-				return response.data
-			}
-		},
+		mutationFn: createWorkflow,
 		onSuccess: async (newWorkflow) => {
 			if (newWorkflow) {
 				queryClient.invalidateQueries({
