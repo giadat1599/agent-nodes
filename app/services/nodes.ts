@@ -29,5 +29,5 @@ export async function updateNodes(input: UpdateWorkflowNodesInput) {
 	})
 
 	if (!response.success) return null
-	return response
+	return response.data
 }

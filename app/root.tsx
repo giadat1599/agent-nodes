@@ -5,8 +5,10 @@ import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration, 
 
 import type { Route } from "./+types/root"
 import "./app.css"
+
 import { toast } from "sonner"
 import { Toaster } from "./components/ui/sonner"
+import { redirectOnUnauthorized } from "./utils/redirect-on-unauthorize"
 
 export const links: Route.LinksFunction = () => [
 	{ rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -42,7 +44,26 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-	const queryClient = useMemo(() => new QueryClient(), [])
+	const queryClient = useMemo(
+		() =>
+			new QueryClient({
+				defaultOptions: {
+					queries: {
+						throwOnError(error) {
+							redirectOnUnauthorized(error)
+							return false
+						},
+					},
+					mutations: {
+						throwOnError(error) {
+							redirectOnUnauthorized(error)
+							return false
+						},
+					},
+				},
+			}),
+		[],
+	)
 	const navigation = useNavigation()
 	const isNavigating = Boolean(navigation.location)
 
