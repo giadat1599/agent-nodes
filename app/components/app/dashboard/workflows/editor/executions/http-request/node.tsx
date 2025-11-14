@@ -1,7 +1,10 @@
+import type { Realtime } from "@inngest/realtime"
 import { type Node, type NodeProps, useReactFlow } from "@xyflow/react"
 import { GlobeIcon } from "lucide-react"
 import { memo, useState } from "react"
 import { BaseExecutionNode } from "~/components/nodes/base-execution-node"
+import { useNodeStatus } from "~/hooks/use-node-status"
+import { getHttpRequestRealTimeRefreshToken } from "~/services/inngest"
 import { type HttpRequestFormData, HttpRequestNodeDialog } from "./node-dialog"
 
 export type HttpRequestNodeData = {
@@ -20,6 +23,16 @@ export const HttpRequestNode = memo((props: NodeProps<HttpRequestNodeType>) => {
 
 	const { setNodes } = useReactFlow()
 	const [dialogOpen, setDialogOpen] = useState(false)
+
+	const nodeStatus = useNodeStatus({
+		nodeId: props.id,
+		channel: "http-request-execution",
+		topic: "status",
+		refreshToken: async () => {
+			const token = await getHttpRequestRealTimeRefreshToken()
+			return token as Realtime.Subscribe.Token
+		},
+	})
 
 	const handleSubmit = (values: HttpRequestFormData) => {
 		setNodes((nds) =>
@@ -45,6 +58,7 @@ export const HttpRequestNode = memo((props: NodeProps<HttpRequestNodeType>) => {
 				icon={GlobeIcon}
 				name="HTTP Request"
 				description={description}
+				status={nodeStatus}
 				onSettings={() => setDialogOpen(true)}
 				onDoubleClick={() => setDialogOpen(true)}
 			/>
