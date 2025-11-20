@@ -1,4 +1,4 @@
-export type NodeType = "initial" | "manual_trigger" | "http_request"
+export type NodeType = "initial" | "manual_trigger" | "http_request" | "google_form_trigger"
 
 export type Workflow = {
 	id: string

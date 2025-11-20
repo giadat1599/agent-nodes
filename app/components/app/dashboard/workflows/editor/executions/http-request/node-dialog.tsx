@@ -25,7 +25,7 @@ const httpRequestFormSchema = z.object({
 			/^[a-zA-Z_][a-zA-Z0-9_]*$/,
 			"Variable name must start with a letter or underscore and contain only letters, numbers, and underscores.",
 		),
-	endpoint: z.url("Please enter a valid URL."),
+	endpoint: z.string(),
 	method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]),
 	body: z.string().optional(),
 })
@@ -53,7 +53,7 @@ export function HttpRequestNodeDialog({ open, onOpenChange, onSubmit, nodeData }
 	})
 
 	const watchMethod = form.watch("method")
-	const showBodyField = methodOptions.includes(watchMethod)
+	const showBodyField = ["POST", "PUT", "PATCH"].includes(watchMethod)
 
 	const handleSubmit = (values: HttpRequestFormData) => {
 		onSubmit(values)
@@ -76,7 +76,7 @@ export function HttpRequestNodeDialog({ open, onOpenChange, onSubmit, nodeData }
 			<DialogContent>
 				<DialogHeader>
 					<DialogTitle>HTTP Request</DialogTitle>
-					<DialogDescription>Configure settings for the manual trigger node.</DialogDescription>
+					<DialogDescription>Configure settings for the http request node.</DialogDescription>
 				</DialogHeader>
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8 mt-4">
