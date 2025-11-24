@@ -38,3 +38,39 @@ export async function getGoogleFormTriggerRealTimeRefreshToken() {
 	if (!response.success) return null
 	return response.data?.token
 }
+
+export async function getGeminiRealTimeRefreshToken() {
+	const response = await apiFetch<ApiResponse<{ token: Realtime.Subscribe.Token }>>(
+		`${RESOURCE}/executors/gemini/refresh-token`,
+		{
+			method: "GET",
+		},
+	)
+
+	if (!response.success) return null
+	return response.data?.token
+}
+
+export async function getOpenAIRealTimeRefreshToken() {
+	const response = await apiFetch<ApiResponse<{ token: Realtime.Subscribe.Token }>>(
+		`${RESOURCE}/executors/openai/refresh-token`,
+		{
+			method: "GET",
+		},
+	)
+
+	if (!response.success) return null
+	return response.data?.token
+}
+
+export async function getAnthropicRealTimeRefreshToken() {
+	const response = await apiFetch<ApiResponse<{ token: Realtime.Subscribe.Token }>>(
+		`${RESOURCE}/executors/anthropic/refresh-token`,
+		{
+			method: "GET",
+		},
+	)
+
+	if (!response.success) return null
+	return response.data?.token
+}

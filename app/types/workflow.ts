@@ -1,4 +1,11 @@
-export type NodeType = "initial" | "manual_trigger" | "http_request" | "google_form_trigger"
+export type NodeType =
+	| "initial"
+	| "manual_trigger"
+	| "http_request"
+	| "google_form_trigger"
+	| "openai"
+	| "gemini"
+	| "anthropic"
 
 export type Workflow = {
 	id: string

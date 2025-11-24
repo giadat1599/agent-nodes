@@ -15,9 +15,11 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from "~/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select"
 import { Textarea } from "~/components/ui/textarea"
-import type { HttpRequestNodeData } from "./node"
+import type { OpenAINodeData } from "./node"
 
-const httpRequestFormSchema = z.object({
+export const AVAILABLE_MODELS = ["gpt-4", "gpt-4o", "gpt-4.1", "gpt-5"] as const
+
+const openAIFormSchema = z.object({
 	variableName: z
 		.string()
 		.min(1, "Variable name is required")
@@ -25,37 +27,32 @@ const httpRequestFormSchema = z.object({
 			/^[a-zA-Z_][a-zA-Z0-9_]*$/,
 			"Variable name must start with a letter or underscore and contain only letters, numbers, and underscores.",
 		),
-	endpoint: z.string(),
-	method: z.enum(["GET", "POST", "PUT", "PATCH", "DELETE"]),
-	body: z.string().optional(),
+	model: z.enum(AVAILABLE_MODELS),
+	systemPrompt: z.string().optional(),
+	userPrompt: z.string().min(1, "User prompt is required"),
 })
 
-const methodOptions = httpRequestFormSchema.shape.method.options
+export type OpenAIFormData = z.infer<typeof openAIFormSchema>
 
-export type HttpRequestFormData = z.infer<typeof httpRequestFormSchema>
-
-interface HttpRequestNodeDialogProps {
+interface OpenAINodeDialogProps {
 	open: boolean
 	onOpenChange: (open: boolean) => void
-	onSubmit: (values: HttpRequestFormData) => void
-	nodeData: HttpRequestNodeData
+	onSubmit: (values: OpenAIFormData) => void
+	nodeData: OpenAINodeData
 }
 
-export function HttpRequestNodeDialog({ open, onOpenChange, onSubmit, nodeData }: HttpRequestNodeDialogProps) {
-	const form = useForm<HttpRequestFormData>({
-		resolver: zodResolver(httpRequestFormSchema),
+export function OpenAINodeDialog({ open, onOpenChange, onSubmit, nodeData }: OpenAINodeDialogProps) {
+	const form = useForm<OpenAIFormData>({
+		resolver: zodResolver(openAIFormSchema),
 		defaultValues: {
 			variableName: nodeData.variableName || "",
-			endpoint: nodeData.endpoint || "",
-			method: nodeData.method || "GET",
-			body: nodeData.body || "",
+			model: nodeData.model || AVAILABLE_MODELS[0],
+			systemPrompt: nodeData.systemPrompt || "",
+			userPrompt: nodeData.userPrompt || "",
 		},
 	})
 
-	const watchMethod = form.watch("method")
-	const showBodyField = ["POST", "PUT", "PATCH"].includes(watchMethod)
-
-	const handleSubmit = (values: HttpRequestFormData) => {
+	const handleSubmit = (values: OpenAIFormData) => {
 		onSubmit(values)
 		onOpenChange(false)
 	}
@@ -64,9 +61,9 @@ export function HttpRequestNodeDialog({ open, onOpenChange, onSubmit, nodeData }
 		if (open) {
 			form.reset({
 				variableName: nodeData.variableName || "",
-				endpoint: nodeData.endpoint || "",
-				method: nodeData.method || "GET",
-				body: nodeData.body || "",
+				model: nodeData.model || AVAILABLE_MODELS[0],
+				systemPrompt: nodeData.systemPrompt || "",
+				userPrompt: nodeData.userPrompt || "",
 			})
 		}
 	}, [open, nodeData, form])
@@ -75,8 +72,8 @@ export function HttpRequestNodeDialog({ open, onOpenChange, onSubmit, nodeData }
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent className="overflow-scroll max-h-[650px]">
 				<DialogHeader>
-					<DialogTitle>HTTP Request</DialogTitle>
-					<DialogDescription>Configure settings for the http request node.</DialogDescription>
+					<DialogTitle>OpenAI Configuration</DialogTitle>
+					<DialogDescription>Configure the AI model and prompts for this node.</DialogDescription>
 				</DialogHeader>
 				<Form {...form}>
 					<form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-8 mt-4">
@@ -87,11 +84,11 @@ export function HttpRequestNodeDialog({ open, onOpenChange, onSubmit, nodeData }
 								<FormItem>
 									<FormLabel>Variable Name</FormLabel>
 									<FormControl>
-										<Input {...field} placeholder="myApicall" />
+										<Input {...field} placeholder="openai" />
 									</FormControl>
 									<FormDescription>
 										Use this variable to reference the response data in other nodes:{" "}
-										{`{{${field.value || "myApiCall"}.httpResponse.data}}`}
+										{`{{${field.value || "openai"}.text}}`}
 									</FormDescription>
 									<FormMessage />
 								</FormItem>
@@ -99,68 +96,71 @@ export function HttpRequestNodeDialog({ open, onOpenChange, onSubmit, nodeData }
 						/>
 						<FormField
 							control={form.control}
-							name="method"
+							name="model"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Method</FormLabel>
+									<FormLabel>Model</FormLabel>
 									<Select onValueChange={field.onChange} defaultValue={field.value}>
 										<FormControl>
 											<SelectTrigger className="w-full">
-												<SelectValue placeholder="Select a method" />
+												<SelectValue placeholder="Select a model" />
 											</SelectTrigger>
 										</FormControl>
 										<SelectContent>
-											{methodOptions.map((method) => (
-												<SelectItem key={method} value={method}>
-													{method}
+											{AVAILABLE_MODELS.map((model) => (
+												<SelectItem key={model} value={model}>
+													{model}
 												</SelectItem>
 											))}
 										</SelectContent>
 									</Select>
-									<FormDescription>The HTTP method to use for the request.</FormDescription>
+									<FormDescription>The AI model to use for the request.</FormDescription>
 									<FormMessage />
 								</FormItem>
 							)}
 						/>
 						<FormField
 							control={form.control}
-							name="endpoint"
+							name="systemPrompt"
 							render={({ field }) => (
 								<FormItem>
-									<FormLabel>Endpoint URL</FormLabel>
+									<FormLabel>System Prompt (Optional)</FormLabel>
 									<FormControl>
-										<Input {...field} placeholder="https://api.example.com/users/{{httpResponse.data.id}}" />
+										<Textarea
+											{...field}
+											className="min-h-[80px] font-mono text-sm"
+											placeholder="You are a helpful assistant."
+										/>
 									</FormControl>
 									<FormDescription>
-										Static URL or use {"{{variable}}"} for simple values or {"{{json variable}}"} to stringify objects
+										Sets the behavior of the assistant. Use {"{{variable}}"} for simple values or {"{{json variable}}"}{" "}
+										to stringify objects
 									</FormDescription>
 									<FormMessage />
 								</FormItem>
 							)}
 						/>
-						{showBodyField && (
-							<FormField
-								control={form.control}
-								name="body"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Request Body</FormLabel>
-										<FormControl>
-											<Textarea
-												{...field}
-												className="min-h-[120px] font-mono text-sm"
-												placeholder={`{\n  "userId": "{{httpResponse.data.id}}",\n  "name": "{{httpResponse.data.name}}"\n}`}
-											/>
-										</FormControl>
-										<FormDescription>
-											JSON with template variables. Use {"{{variable}}"} for simple values or {"{{json variable}}"} to
-											stringify objects
-										</FormDescription>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-						)}
+						<FormField
+							control={form.control}
+							name="userPrompt"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>User Prompt</FormLabel>
+									<FormControl>
+										<Textarea
+											{...field}
+											className="min-h-[120px] font-mono text-sm"
+											placeholder="Summarize this text: {{json.httpResponse.data}}"
+										/>
+									</FormControl>
+									<FormDescription>
+										The prompt to send to the AI. Use {"{{variable}}"} for simple values or {"{{json variable}}"} to
+										stringify objects
+									</FormDescription>
+									<FormMessage />
+								</FormItem>
+							)}
+						/>
 						<DialogFooter className="mt-4">
 							<Button type="submit">Save</Button>
 						</DialogFooter>
